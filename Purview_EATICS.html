@@ -1,0 +1,565 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Purview en EATICS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: expediente corporativo — un documento de muestra que se "sella" con cada etiqueta; secciones en una columna ancha con paneles de trabajo */
+:root{
+  --bg:#EEF1F5; --paper:#FFFFFF; --ink:#101A2B; --muted:#56627A; --line:#D5DBE5; --soft:#E3E8EF;
+  --accent:#E8590C; --accent-soft:#FDE7DA;
+  --l-green:#1E8A4C; --l-green-soft:#E1F3E8;
+  --l-amber:#C98A00; --l-amber-soft:#FBF0D3;
+  --l-red:#C42A20; --l-red-soft:#FBE3E1;
+  --l-black:#151922; --l-black-fg:#FFFFFF; --l-black-soft:#E2E5EA;
+  --ok:#1E8A4C; --warn:#B26B00; --info:#2C5BB8;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --shadow:0 18px 40px -22px rgba(16,26,43,.35);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1019; --paper:#141B27; --ink:#E7ECF4; --muted:#9AA6BA; --line:#283244; --soft:#1B2433;
+  --accent:#FF7A33; --accent-soft:#3A2214;
+  --l-green:#3CC47A; --l-green-soft:#12301F;
+  --l-amber:#F2B630; --l-amber-soft:#33280C;
+  --l-red:#FF5A4E; --l-red-soft:#3A1714;
+  --l-black:#000000; --l-black-fg:#F2F4F8; --l-black-soft:#232B39;
+  --ok:#3CC47A; --warn:#F2B630; --info:#7AA2F2;
+  --shadow:0 18px 40px -22px rgba(0,0,0,.8); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1019; --paper:#141B27; --ink:#E7ECF4; --muted:#9AA6BA; --line:#283244; --soft:#1B2433;
+  --accent:#FF7A33; --accent-soft:#3A2214;
+  --l-green:#3CC47A; --l-green-soft:#12301F;
+  --l-amber:#F2B630; --l-amber-soft:#33280C;
+  --l-red:#FF5A4E; --l-red-soft:#3A1714;
+  --l-black:#000000; --l-black-fg:#F2F4F8; --l-black-soft:#232B39;
+  --ok:#3CC47A; --warn:#F2B630; --info:#7AA2F2;
+  --shadow:0 18px 40px -22px rgba(0,0,0,.8); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);line-height:1.08;text-wrap:balance;margin:0;letter-spacing:-.015em}
+h2{font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.lede{color:var(--muted);max-width:62ch;font-size:1.05rem}
+section{padding-block:72px;border-top:1px solid var(--line)}
+.sec-head{display:grid;gap:12px;margin-bottom:36px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+/* nav */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:1.05rem}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--ink);display:grid;place-items:center}
+.brand-mark svg{width:16px;height:16px}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;padding:6px 10px;border-radius:999px}
+.nav a:hover{background:var(--soft);color:var(--ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;padding-block:40px 72px}
+.hero h1{font-size:clamp(2.6rem,6.2vw,4.8rem);font-weight:800;letter-spacing:-.03em}
+.hero h1 span{display:block}
+.hero h1 .w2{color:var(--accent)}
+.hero h1 .w3{color:transparent;-webkit-text-stroke:2px var(--ink)}
+.hero-copy{display:grid;gap:22px;min-width:0}
+.hero-note{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-left:3px solid var(--accent);background:var(--paper);border-radius:0 10px 10px 0;max-width:52ch;font-size:.95rem}
+.hero-note b{font-weight:600}
+
+/* document demo */
+.demo{display:grid;gap:14px;min-width:0}
+.picker{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pick{border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:10px 8px;display:flex;gap:8px;align-items:center;justify-content:center;font-size:.84rem;font-weight:600;transition:transform .15s, border-color .15s}
+.pick:hover{transform:translateY(-1px)}
+.pick .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.pick[aria-pressed="true"]{border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
+.doc{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;min-height:360px}
+.doc-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:.8rem;color:var(--muted);flex-wrap:wrap}
+.doc-bar .fname{font-family:var(--f-mono);font-size:.76rem}
+.lbl-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:.76rem;font-weight:600;background:var(--chipbg);color:var(--chipfg);margin-left:auto}
+.banner{display:flex;gap:10px;align-items:center;padding:8px 14px;background:var(--l-amber-soft);color:var(--ink);font-size:.78rem;border-bottom:1px solid var(--line)}
+.banner b{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em}
+.doc-body{padding:26px 30px 30px;position:relative;display:grid;gap:12px}
+.doc-header{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;color:var(--muted);min-height:1em}
+.doc-title{font-family:var(--f-display);font-weight:700;font-size:1.15rem}
+.lines{display:grid;gap:9px}
+.lines i{display:block;height:8px;border-radius:4px;background:var(--soft)}
+.watermark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-family:var(--f-display);font-weight:800;font-size:clamp(2rem,6vw,3.2rem);letter-spacing:.08em;color:var(--l-red);opacity:0;transform:rotate(-24deg) scale(1.3);transition:opacity .35s, transform .35s}
+.watermark.on{opacity:.13;transform:rotate(-24deg) scale(1)}
+.stamp{position:absolute;right:22px;bottom:22px;border:3px solid var(--sc);color:var(--sc);font-family:var(--f-display);font-weight:800;padding:6px 14px;border-radius:8px;transform:rotate(-8deg);letter-spacing:.04em;font-size:1rem;background:var(--paper);animation:stamp .35s ease-out}
+@keyframes stamp{from{transform:rotate(-8deg) scale(1.8);opacity:0}to{transform:rotate(-8deg) scale(1);opacity:1}}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fact{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:2px;min-width:0}
+.fact small{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.fact span{font-weight:600;font-size:.88rem}
+
+/* what is */
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.why-item{display:grid;gap:10px;align-content:start;padding-top:18px;border-top:3px solid var(--ink)}
+.why-item p{color:var(--muted)}
+.callout{margin-top:32px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:var(--ink);color:var(--bg);border-radius:16px;padding:24px 28px}
+.callout .big{font-family:var(--f-display);font-weight:800;font-size:clamp(1.2rem,2.4vw,1.6rem);line-height:1.2}
+.callout svg{width:40px;height:40px}
+
+/* labels */
+.labels{display:grid;grid-template-columns:260px 1fr;gap:24px}
+.lbl-tabs{display:grid;gap:8px;align-content:start}
+.lbl-tab{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-align:left;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--paper)}
+.lbl-tab .lvl{font-family:var(--f-mono);font-size:.7rem;color:var(--muted)}
+.lbl-tab .sw{width:14px;height:36px;border-radius:4px;background:var(--c)}
+.lbl-tab b{font-family:var(--f-display);font-size:1.05rem}
+.lbl-tab[aria-selected="true"]{background:var(--soft);border-color:var(--c)}
+.lbl-panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0}
+.lp-head{padding:24px 28px;background:var(--c);color:var(--cf);display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.lp-head h3{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800}
+.lp-head .meter{display:flex;gap:4px}
+.lp-head .meter i{width:22px;height:8px;border-radius:2px;background:currentColor;opacity:.25}
+.lp-head .meter i.f{opacity:1}
+.lp-body{padding:24px 28px;display:grid;grid-template-columns:1fr 1fr;gap:22px 28px}
+.lp-body dt{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.lp-body dd{margin:0}
+.lp-body .full{grid-column:1/-1}
+.ex{display:flex;flex-wrap:wrap;gap:6px}
+.ex span{background:var(--cs);border-radius:6px;padding:4px 10px;font-size:.86rem}
+
+/* decision */
+.decide{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.q-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px;display:grid;gap:18px;align-content:start;min-width:0}
+.q-step{font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+.q-text{font-family:var(--f-display);font-size:1.4rem;font-weight:700;line-height:1.25}
+.q-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:9px 20px;font-weight:600;font-size:.92rem}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.trail{display:grid;gap:8px;align-content:start}
+.trail-item{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px dashed var(--line);color:var(--muted);font-size:.92rem}
+.trail-item.no{text-decoration:line-through;opacity:.6}
+.trail-item.yes{border-style:solid;border-color:var(--c);color:var(--ink);background:var(--cs)}
+.trail-item .sw{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.result{border-radius:12px;padding:16px 18px;background:var(--cs);border-left:4px solid var(--c)}
+.result b{font-family:var(--f-display);font-size:1.3rem}
+
+/* how */
+.seg{display:inline-flex;background:var(--soft);border-radius:999px;padding:4px;gap:4px;margin-bottom:24px}
+.seg button{border:0;background:transparent;padding:8px 18px;border-radius:999px;font-weight:600;font-size:.9rem;color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:s}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:8px;align-content:start;counter-increment:s;min-width:0}
+.step::before{content:counter(s);font-family:var(--f-display);font-weight:800;font-size:1.8rem;color:var(--accent);line-height:1}
+.step b{font-weight:600}
+.step p{color:var(--muted);font-size:.9rem}
+.tip{margin-top:16px;display:flex;gap:10px;font-size:.93rem;color:var(--muted)}
+.tip b{color:var(--ink)}
+
+/* permisos */
+.perm{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:start}
+.roles{display:grid;gap:8px}
+.role{text-align:left;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--paper);display:grid;gap:2px}
+.role b{font-family:var(--f-display);font-size:1.05rem}
+.role span{color:var(--muted);font-size:.88rem}
+.role[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.matrix{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:10px;min-width:0}
+.m-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--soft);font-size:.95rem}
+.m-row:last-of-type{border-bottom:0}
+.yn{font-family:var(--f-mono);font-size:.78rem;padding:3px 10px;border-radius:999px;min-width:44px;text-align:center}
+.yn.y{background:var(--l-green-soft);color:var(--l-green)}
+.yn.n{background:var(--soft);color:var(--muted)}
+.m-note{font-size:.88rem;color:var(--muted);padding-top:6px}
+
+/* pruebas */
+.lessons{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.lesson{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:8px;align-content:start}
+.lesson .tag{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.lesson p{color:var(--muted);font-size:.93rem}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.filters button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 14px;font-size:.84rem}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.table-wrap{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--soft);vertical-align:top}
+th{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+.app{font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+.st{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:.82rem;font-weight:600}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.st.ok{color:var(--ok)} .st.obs{color:var(--info)} .st.warn{color:var(--warn)}
+
+/* quiz */
+.quiz{display:grid;grid-template-columns:1fr 300px;gap:24px}
+.qz{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px;display:grid;gap:18px;min-width:0}
+.qz-sc{font-family:var(--f-display);font-size:1.35rem;font-weight:700;line-height:1.3}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.opt{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);font-weight:600;text-align:left}
+.opt .dot{width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
+.opt.right{border-color:var(--l-green);background:var(--l-green-soft)}
+.opt.wrong{border-color:var(--l-red);background:var(--l-red-soft)}
+.opt:disabled{cursor:default}
+.fb{padding:14px 16px;border-radius:10px;background:var(--soft);font-size:.95rem}
+.score{background:var(--ink);color:var(--bg);border-radius:16px;padding:24px;display:grid;gap:14px;align-content:start}
+.score .n{font-family:var(--f-display);font-weight:800;font-size:3.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.pips{display:flex;gap:6px}
+.pips i{flex:1;height:6px;border-radius:3px;background:rgba(128,128,128,.35)}
+.pips i.r{background:var(--l-green)} .pips i.w{background:var(--l-red)}
+
+/* close */
+.close{background:var(--accent);color:#fff;border-radius:22px;padding:44px 40px;display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:center}
+.close h2{color:#fff}
+.close .rule{display:grid;gap:10px}
+.close .rule div{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.14);border-radius:10px;padding:10px 14px;font-weight:600}
+.close .rule span{font-family:var(--f-mono);font-size:.78rem;opacity:.85}
+footer{padding-block:32px 48px;color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:920px){
+  .hero,.decide,.perm,.quiz,.close,.labels{grid-template-columns:1fr}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .lessons,.why{grid-template-columns:1fr}
+  .lbl-tabs{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:520px){
+  section{padding-block:52px}
+  .picker{grid-template-columns:repeat(2,1fr)}
+  .facts{grid-template-columns:1fr}
+  .lp-body,.opts{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .nav{display:none}
+  .close{padding:28px 22px}
+  .doc-body{padding:20px}
+  .callout{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div>
+      Microsoft Purview <span style="color:var(--muted);font-weight:500">· EATICS</span>
+    </div>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#que-es">Qué es</a><a href="#etiquetas">Etiquetas</a><a href="#elegir">Elegir</a><a href="#aplicar">Aplicar</a><a href="#permisos">Permisos</a><a href="#pruebas">Pruebas</a><a href="#reto">Reto</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">Clasificación y protección de información</div>
+      <h1><span>Clasifica.</span><span class="w2">Protege.</span><span class="w3">Colabora.</span></h1>
+      <p class="lede">Las etiquetas de sensibilidad de Microsoft Purview identifican qué tan delicada es la información y aplican la protección que le corresponde, en Word, Excel, PowerPoint y Outlook.</p>
+      <div class="hero-note"><div><b>Pruébalo a la derecha.</b> Elige una etiqueta y observa cómo cambia el mismo documento: marcas visuales, cifrado y quién puede abrirlo.</div></div>
+    </div>
+
+    <div class="demo">
+      <div class="picker" role="group" aria-label="Aplicar etiqueta al documento de muestra" id="picker"></div>
+      <div class="doc" id="doc">
+        <div class="doc-bar"><span class="fname">Propuesta_Proyecto_Q4.docx</span><span id="docSaved">Guardado</span><span class="lbl-chip" id="docChip"></span></div>
+        <div class="banner" id="docBanner" hidden><b>RESTRICTED ACCESS</b> Solo los usuarios especificados pueden obtener acceso al contenido.</div>
+        <div class="doc-body">
+          <div class="doc-header" id="docHeader"></div>
+          <div class="doc-title">Propuesta de proyecto · Cuarto trimestre</div>
+          <div class="lines"><i style="width:96%"></i><i style="width:88%"></i><i style="width:92%"></i><i style="width:60%"></i><i style="width:0;height:6px;background:none"></i><i style="width:90%"></i><i style="width:84%"></i><i style="width:72%"></i></div>
+          <div class="watermark" id="docWm">CONFIDENCIAL</div>
+        </div>
+        <div id="docStamp"></div>
+      </div>
+      <div class="facts">
+        <div class="fact"><small>Cifrado</small><span id="fCifrado">—</span></div>
+        <div class="fact"><small>Quién abre</small><span id="fQuien">—</span></div>
+        <div class="fact"><small>Reenviar</small><span id="fReenvio">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="que-es">
+    <div class="sec-head">
+      <div class="eyebrow">Qué es Microsoft Purview</div>
+      <h2>Una etiqueta que viaja con la información</h2>
+      <p class="lede">Purview es la solución de Microsoft 365 para clasificar y proteger datos. Al aplicar una etiqueta de sensibilidad a un archivo o correo, la clasificación queda guardada dentro del propio elemento y, según la etiqueta, activa cifrado, permisos y marcas visuales.</p>
+    </div>
+    <div class="why">
+      <div class="why-item"><h3>Mantiene la información segura</h3><p>Las etiquetas más altas cifran el contenido: solo una identidad con permisos puede abrirlo, aunque el archivo se copie o se reenvíe.</p></div>
+      <div class="why-item"><h3>Cumple las políticas</h3><p>Ayuda a cumplir las políticas de seguridad de la empresa y la norma ISO 27001 con una clasificación uniforme en archivos, correos, Teams y SharePoint.</p></div>
+      <div class="why-item"><h3>Permite colaborar con control</h3><p>No se trata de bloquear todo. Cada nivel define con quién se puede colaborar, incluso con externos autorizados cuando la etiqueta lo permite.</p></div>
+    </div>
+    <div class="callout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+      <div><div class="big">La clasificación no sustituye la autorización de negocio.</div><p style="opacity:.75;margin-top:6px">Aplicar una etiqueta no da acceso automático a nadie, ni siquiera al remitente. Los permisos se evalúan por separado.</p></div>
+    </div>
+  </section>
+
+  <section id="etiquetas">
+    <div class="sec-head">
+      <div class="eyebrow">Nuestras etiquetas</div>
+      <h2>Cuatro niveles, de público a ultraconfidencial</h2>
+      <p class="lede">A mayor sensibilidad, mayor cuidado al elegir destinatarios y permisos. Selecciona cada nivel para ver cuándo usarlo y cómo se comporta.</p>
+    </div>
+    <div class="labels">
+      <div class="lbl-tabs" role="tablist" id="lblTabs"></div>
+      <div class="lbl-panel" role="tabpanel" id="lblPanel"></div>
+    </div>
+  </section>
+
+  <section id="elegir">
+    <div class="sec-head">
+      <div class="eyebrow">Asistente de decisión</div>
+      <h2>¿Qué etiqueta le pongo?</h2>
+      <p class="lede">Responde de la más sensible a la menos sensible. Elige la etiqueta por el contenido, no por la comodidad de compartirlo.</p>
+    </div>
+    <div class="decide">
+      <div class="q-card" id="qCard"></div>
+      <div class="trail" id="trail"></div>
+    </div>
+  </section>
+
+  <section id="aplicar">
+    <div class="sec-head">
+      <div class="eyebrow">Paso a paso</div>
+      <h2>Cómo aplicar una etiqueta</h2>
+      <p class="lede">El proceso de Word es el mismo en Excel y PowerPoint. En Outlook, el menú está junto al icono del escudo en la ventana de redacción.</p>
+    </div>
+    <div class="seg" role="tablist" id="appSeg">
+      <button role="tab" aria-selected="true" data-app="word">Word, Excel, PowerPoint</button>
+      <button role="tab" aria-selected="false" data-app="outlook">Outlook</button>
+    </div>
+    <div class="steps" id="steps"></div>
+    <div class="tip" id="appTip"></div>
+  </section>
+
+  <section id="permisos">
+    <div class="sec-head">
+      <div class="eyebrow">Negro · Ultraconfidencial</div>
+      <h2>Tú decides quién puede qué</h2>
+      <p class="lede">Al aplicar Ultraconfidencial en Word aparece la ventana <b>Permisos</b>. Asigna personas a un rol y concede solo lo necesario para la tarea.</p>
+    </div>
+    <div class="perm">
+      <div class="roles" id="roles"></div>
+      <div class="matrix" id="matrix"></div>
+    </div>
+  </section>
+
+  <section id="pruebas">
+    <div class="sec-head">
+      <div class="eyebrow">Resultados de las pruebas</div>
+      <h2>Lo que vimos al probarlo</h2>
+      <p class="lede">Comportamiento observado durante la validación con documentos y correos de prueba. Las restricciones concretas dependen de la etiqueta, los permisos, la identidad del destinatario y la aplicación.</p>
+    </div>
+    <div class="lessons">
+      <div class="lesson"><span class="tag">Leer ≠ redistribuir</span><h3>No reenviar no impide leer</h3><p>En Ultraconfidencial, el destinatario externo autorizado leyó el correo, pero el botón Reenviar apareció deshabilitado. Son controles distintos.</p></div>
+      <div class="lesson"><span class="tag">Externos con Rojo</span><h3>Confidencial es para personal interno</h3><p>Un correo Rojo enviado fuera llegó protegido y pidió un código de un solo uso, pero el portal no mostró el contenido. Úsalo solo con usuarios de la organización.</p></div>
+      <div class="lesson"><span class="tag">Capturas de pantalla</span><h3>No es una garantía universal</h3><p>En Outlook de escritorio la captura salió en negro; en Outlook web sí se pudo capturar. Es un comportamiento observado, no una promesa.</p></div>
+    </div>
+    <div class="filters" role="group" aria-label="Filtrar resultados" id="filters">
+      <button aria-pressed="true" data-f="all">Todos</button><button aria-pressed="false" data-f="Word">Word</button><button aria-pressed="false" data-f="Outlook">Outlook</button>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Escenario</th><th>Resultado registrado</th><th>Estado</th></tr></thead><tbody id="results"></tbody></table></div>
+  </section>
+
+  <section id="reto">
+    <div class="sec-head">
+      <div class="eyebrow">Ponlo a prueba</div>
+      <h2>Clasifica estos casos</h2>
+      <p class="lede">Situaciones habituales en la oficina. Elige la etiqueta que corresponde y revisa la explicación.</p>
+    </div>
+    <div class="quiz">
+      <div class="qz" id="qz"></div>
+      <aside class="score" id="score"></aside>
+    </div>
+  </section>
+
+  <section style="border-top:0;padding-top:0">
+    <div class="close">
+      <div style="display:grid;gap:14px">
+        <h2>Tu participación es clave</h2>
+        <p style="opacity:.9;max-width:52ch">Clasificar correctamente protege a nuestra organización, a nuestros clientes y a nuestros colaboradores. Si tienes dudas sobre qué etiqueta usar o necesitas que alguien tenga acceso, contacta al equipo de TI.</p>
+      </div>
+      <div class="rule">
+        <div><span>1</span>Clasifica el contenido</div>
+        <div><span>2</span>Confirma los destinatarios</div>
+        <div><span>3</span>Revisa los permisos</div>
+      </div>
+    </div>
+  </section>
+
+  <footer><span>Basado en la Guía de usuario de etiquetas de sensibilidad, Alianza Corp para EATICS · v1.0</span><span>¿Dudas? Equipo de TI</span></footer>
+</div>
+
+<script>
+const L=[
+ {id:"verde",name:"Público",full:"Verde · Público",c:"var(--l-green)",cf:"#fff",cs:"var(--l-green-soft)",lvl:1,
+  desc:"Información que puede compartirse con cualquier persona, dentro o fuera de la organización, siempre que esté aprobada para difusión.",
+  when:"Información aprobada para difusión pública.",behavior:"La etiqueta no agrega cifrado ni permisos adicionales.",collab:"Colaboración general, según las reglas corporativas.",
+  ex:["Material de marketing","Información general","Contenido para clientes"],
+  demo:{cif:"No",quien:"Cualquiera",fwd:"Permitido",header:"",wm:false,banner:false,stamp:"PÚBLICO"}},
+ {id:"amarillo",name:"Interno",full:"Amarillo · Interno",c:"var(--l-amber)",cf:"#1a1200",cs:"var(--l-amber-soft)",lvl:2,
+  desc:"Información de trabajo que no es pública y puede requerir colaboración controlada con terceros.",
+  when:"Información de trabajo que no es pública.",behavior:"No aplica cifrado por etiqueta; los accesos a sitios pueden estar limitados.",collab:"Colaboración controlada; los invitados deben autenticarse.",
+  ex:["Procesos internos","Presentaciones de trabajo","Documentos operativos"],
+  demo:{cif:"No",quien:"Equipo e invitados",fwd:"Permitido",header:"",wm:false,banner:false,stamp:"INTERNO"}},
+ {id:"rojo",name:"Confidencial",full:"Rojo · Confidencial",c:"var(--l-red)",cf:"#fff",cs:"var(--l-red-soft)",lvl:3,
+  desc:"Información sensible de negocio con distribución limitada únicamente a personal de la organización.",
+  when:"Información sensible que requiere distribución limitada.",behavior:"Aplica protección (cifrado) al correo o archivo con los permisos configurados.",collab:"Revisa destinatarios y permisos antes de compartir. Solo usuarios internos.",
+  ex:["Información financiera","Contratos","Datos de empleados","Proyectos"],
+  demo:{cif:"Sí",quien:"Solo internos",fwd:"Según permisos",header:"",wm:false,banner:false,stamp:"CONFIDENCIAL"}},
+ {id:"negro",name:"Ultraconfidencial",full:"Negro · Ultraconfidencial",c:"var(--l-black)",cf:"var(--l-black-fg)",cs:"var(--l-black-soft)",lvl:4,
+  desc:"Información altamente sensible y crítica, con acceso limitado a personas autorizadas de forma explícita.",
+  when:"Información de máxima sensibilidad.",behavior:"Permisos específicos y marcas visuales (encabezado USO RESTRINGIDO, marca de agua CONFIDENCIAL). En Word pide asignar permisos.",collab:"Puede darse acceso a personas concretas, incluidos externos invitados, si los permisos lo permiten.",
+  ex:["Estrategia del negocio","Fusiones","Adquisiciones","Información legal"],
+  demo:{cif:"Sí",quien:"Solo asignados",fwd:"Deshabilitado",header:"USO RESTRINGIDO",wm:true,banner:true,stamp:"ULTRACONFIDENCIAL"}}
+];
+const $=s=>document.querySelector(s);
+
+/* hero demo */
+function setDemo(i){
+  const l=L[i],d=l.demo;
+  document.querySelectorAll(".pick").forEach((b,j)=>b.setAttribute("aria-pressed",j===i));
+  const chip=$("#docChip");chip.textContent=l.full;chip.style.setProperty("--chipbg",l.c);chip.style.setProperty("--chipfg",l.cf);
+  $("#docBanner").hidden=!d.banner;$("#docHeader").textContent=d.header;
+  $("#docWm").classList.toggle("on",d.wm);
+  $("#docStamp").innerHTML=`<div class="stamp" style="--sc:${l.c}">${d.stamp}</div>`;
+  $("#fCifrado").textContent=d.cif;$("#fQuien").textContent=d.quien;$("#fReenvio").textContent=d.fwd;
+}
+$("#picker").innerHTML=L.map((l,i)=>`<button class="pick" style="--c:${l.c}" aria-pressed="false" data-i="${i}"><span class="dot" style="background:${l.c}"></span>${l.name}</button>`).join("");
+$("#picker").addEventListener("click",e=>{const b=e.target.closest(".pick");if(b)setDemo(+b.dataset.i)});
+setDemo(2);
+
+/* labels explorer */
+function setLbl(i){
+  const l=L[i];
+  document.querySelectorAll(".lbl-tab").forEach((b,j)=>b.setAttribute("aria-selected",j===i));
+  const p=$("#lblPanel");p.style.setProperty("--c",l.c);p.style.setProperty("--cf",l.cf);p.style.setProperty("--cs",l.cs);
+  p.innerHTML=`<div class="lp-head"><div><div class="eyebrow" style="color:inherit;opacity:.8">Nivel ${l.lvl} de 4</div><h3>${l.full}</h3></div>
+   <div class="meter" aria-hidden="true">${[1,2,3,4].map(n=>`<i class="${n<=l.lvl?'f':''}"></i>`).join("")}</div></div>
+   <dl class="lp-body"><div class="full"><dd style="font-size:1.08rem">${l.desc}</dd></div>
+   <div><dt>Cuándo usarla</dt><dd>${l.when}</dd></div><div><dt>Comportamiento</dt><dd>${l.behavior}</dd></div>
+   <div><dt>Colaboración</dt><dd>${l.collab}</dd></div><div><dt>Ejemplos</dt><dd class="ex">${l.ex.map(x=>`<span>${x}</span>`).join("")}</dd></div></dl>`;
+}
+$("#lblTabs").innerHTML=L.map((l,i)=>`<button class="lbl-tab" role="tab" style="--c:${l.c}" data-i="${i}"><span class="sw"></span><b>${l.name}</b><span class="lvl">N${l.lvl}</span></button>`).join("");
+$("#lblTabs").addEventListener("click",e=>{const b=e.target.closest(".lbl-tab");if(b)setLbl(+b.dataset.i)});
+setLbl(0);
+
+/* decision */
+const Q=[
+ {t:"¿Es información de máxima sensibilidad y necesito decidir quién puede verla o editarla?",r:3},
+ {t:"¿Es información sensible que debe protegerse con cifrado y compartirse solo con personal interno?",r:2},
+ {t:"¿Es información de trabajo que no es pública, aunque se colabore de forma controlada con terceros?",r:1},
+ {t:"¿Está aprobada para difusión pública?",r:0}
+];
+let qi=0,ans=[];
+function renderQ(){
+  const trail=[3,2,1,0].map((li,k)=>{const l=L[li];const st=ans[k]===false?"no":ans[k]===true?"yes":"";
+    return `<div class="trail-item ${st}" style="--c:${l.c};--cs:${l.cs}"><span class="sw"></span>${l.full}</div>`}).join("");
+  $("#trail").innerHTML=trail;
+  const done=ans.includes(true);
+  if(done){const l=L[Q[ans.indexOf(true)].r];
+    $("#qCard").innerHTML=`<div class="q-step">Resultado</div><div class="result" style="--c:${l.c};--cs:${l.cs}"><div class="eyebrow" style="color:var(--muted)">Etiqueta sugerida</div><b>${l.full}</b><p style="margin-top:6px">${l.collab}</p></div><div class="q-actions"><button class="btn primary" id="qReset">Clasificar otro documento</button></div>`;
+  }else if(qi>=Q.length){
+    $("#qCard").innerHTML=`<div class="q-step">Resultado</div><div class="result" style="--c:var(--accent);--cs:var(--accent-soft)"><b>Consulta al equipo de TI</b><p style="margin-top:6px">Si ninguna opción encaja, pide apoyo antes de compartir. No apliques Público a información que no esté aprobada para difusión.</p></div><div class="q-actions"><button class="btn primary" id="qReset">Empezar de nuevo</button></div>`;
+  }else{
+    $("#qCard").innerHTML=`<div class="q-step">Pregunta ${qi+1} de ${Q.length}</div><div class="q-text">${Q[qi].t}</div><div class="q-actions"><button class="btn primary" data-a="1">Sí</button><button class="btn" data-a="0">No</button>${qi?'<button class="btn ghost" id="qReset">Reiniciar</button>':''}</div>`;
+  }
+}
+$("#qCard").addEventListener("click",e=>{
+  if(e.target.id==="qReset"){qi=0;ans=[];renderQ();return}
+  const a=e.target.dataset.a;if(a===undefined)return;ans[qi]=a==="1";qi++;renderQ();
+});
+renderQ();
+
+/* steps */
+const S={
+ word:{steps:[["Abre el documento","Crea o abre el archivo con tu cuenta corporativa. Uno nuevo puede mostrar “Sin etiqueta”."],["Busca Sensibilidad","En la cinta de opciones, localiza Sensibilidad o Confidencialidad."],["Elige la etiqueta","Revisa las opciones del menú y selecciona la que corresponde al contenido."],["Completa permisos","Si la etiqueta solicita permisos (Ultraconfidencial), asígnalos antes de continuar."],["Guarda y verifica","Guarda y confirma que el nombre de la etiqueta aparece en la barra superior."]],
+  tip:"<b>Comprobado en pruebas:</b> la etiqueta se conserva al cerrar y volver a abrir el documento."},
+ outlook:{steps:[["Nuevo correo","Selecciona Nuevo correo. En nuestro entorno, inicia con Verde · Público."],["Redacta","Completa destinatarios, asunto y contenido del mensaje."],["Abre el escudo","Usa el menú de sensibilidad junto al icono del escudo en la ventana de redacción."],["Selecciona la etiqueta","Elige Amarillo, Rojo o Negro según el contenido del mensaje."],["Verifica y envía","Confirma que el encabezado diga “Confidencialidad: …” y revisa la audiencia antes de enviar."]],
+  tip:"<b>Recuerda:</b> la etiqueta no sustituye la revisión de los destinatarios. Outlook avisa cuando hay un destinatario externo."}
+};
+function setApp(k){
+  document.querySelectorAll("#appSeg button").forEach(b=>b.setAttribute("aria-selected",b.dataset.app===k));
+  $("#steps").innerHTML=S[k].steps.map(s=>`<div class="step"><b>${s[0]}</b><p>${s[1]}</p></div>`).join("");
+  $("#appTip").innerHTML=S[k].tip;
+}
+$("#appSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setApp(b.dataset.app)});
+setApp("word");
+
+/* permisos */
+const R=[
+ {n:"Visor",d:"Solo necesita consultar",p:[1,0,0,0,0],note:"Apropiado cuando la persona solo necesita consultar. Así se probó con un usuario externo autorizado: pudo ver el documento con marca de agua, sin editar, copiar, imprimir, guardar ni exportar."},
+ {n:"Editor restringido",d:"Edita con limitaciones",p:[1,1,0,0,0],note:"Puede ver y editar, pero no imprimir, copiar contenido ni cambiar o quitar la protección."},
+ {n:"Editor",d:"Colabora con más capacidades",p:[1,1,1,1,0],note:"Puede ver, editar, imprimir y copiar. No puede cambiar ni quitar la protección."},
+ {n:"Propietario",d:"Control total",p:[1,1,1,1,1],note:"Puede hacer cualquier cosa con el documento, incluido quitar la protección. Conserva siempre al propietario con su rol."}
+];
+const A=["Ver","Editar","Imprimir","Copiar contenido","Quitar la protección"];
+function setRole(i){
+  document.querySelectorAll(".role").forEach((b,j)=>b.setAttribute("aria-pressed",j===i));
+  const r=R[i];
+  $("#matrix").innerHTML=`<div class="eyebrow" style="color:var(--muted)">Permisos del rol</div><h3 style="font-size:1.5rem">${r.n}</h3>`+
+   A.map((a,k)=>`<div class="m-row"><span>${a}</span><span class="yn ${r.p[k]?'y':'n'}">${r.p[k]?'Sí':'No'}</span></div>`).join("")+
+   `<p class="m-note">${r.note}</p>`;
+}
+$("#roles").innerHTML=R.map((r,i)=>`<button class="role" aria-pressed="false" data-i="${i}"><b>${r.n}</b><span>${r.d}</span></button>`).join("");
+$("#roles").addEventListener("click",e=>{const b=e.target.closest(".role");if(b)setRole(+b.dataset.i)});
+setRole(0);
+
+/* resultados */
+const T=[
+ ["Word","Verde · Público","Etiqueta aplicada y visible en la barra superior.","ok","Correcto"],
+ ["Word","Amarillo · Interno","Etiqueta aplicada y guardada; se comprobó el indicador.","ok","Correcto"],
+ ["Word","Rojo · Confidencial","Etiqueta aplicada y conservada al volver a abrir el documento.","ok","Correcto"],
+ ["Word","Negro · Ultraconfidencial","Etiqueta aplicada; aviso Restricted Access y marcas visuales visibles.","ok","Correcto"],
+ ["Word","Externo autorizado en Negro","Permiso Visor; lectura con marca de agua, sin edición, copia, impresión, guardado ni exportación.","ok","Correcto"],
+ ["Word","Sesión sin permisos","Word y SharePoint indicaron falta de permisos o la opción de solicitar acceso.","obs","Acceso restringido"],
+ ["Outlook","Verde por defecto","Los correos nuevos comenzaron con Verde · Público.","obs","Observado"],
+ ["Outlook","Rojo interno","El mensaje se recibió y conservó la etiqueta.","ok","Correcto"],
+ ["Outlook","Rojo externo","Mensaje protegido; se completó el código de un solo uso, pero el portal no mostró el contenido.","warn","No visualizado"],
+ ["Outlook","Negro interno","Recepción correcta; Reenviar deshabilitado.","ok","Correcto"],
+ ["Outlook","Negro externo autorizado","Se leyó en el navegador; la interfaz indicó reenvío deshabilitado.","ok","Correcto"]
+];
+function setFilter(f){
+  document.querySelectorAll("#filters button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===f));
+  $("#results").innerHTML=T.filter(r=>f==="all"||r[0]===f).map(r=>`<tr><td><div class="app">${r[0]}</div>${r[1]}</td><td>${r[2]}</td><td><span class="st ${r[3]}">${r[4]}</span></td></tr>`).join("");
+}
+$("#filters").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setFilter(b.dataset.f)});
+setFilter("all");
+
+/* quiz */
+const QZ=[
+ {s:"Un folleto de servicios ya aprobado por Marketing para publicarse en el sitio web.",a:0,e:"Está aprobado para difusión pública. Verde no agrega cifrado ni permisos."},
+ {s:"La nómina del mes con datos de los empleados, para enviarla a Recursos Humanos.",a:2,e:"Datos de empleados e información financiera: sensible y solo para personal interno. Rojo aplica cifrado."},
+ {s:"Una presentación de procesos internos que revisarás con un proveedor invitado.",a:1,e:"Es información de trabajo no pública con colaboración controlada; los invitados deben autenticarse."},
+ {s:"El análisis de una posible adquisición que solo verán dos directores y un asesor legal externo.",a:3,e:"Máxima sensibilidad y personas concretas: Ultraconfidencial te permite asignar permisos individuales, incluso a un externo invitado."},
+ {s:"Un contrato con un cliente que circulará entre Jurídico y Finanzas de la empresa.",a:2,e:"Los contratos son información sensible de distribución limitada dentro de la organización."},
+ {s:"Un manual operativo del área de soporte para uso del equipo.",a:1,e:"Documento operativo interno, no público y sin necesidad de cifrado por etiqueta."}
+];
+let zi=0,res=[];
+function renderQz(){
+  const right=res.filter(Boolean).length;
+  $("#score").innerHTML=`<div class="eyebrow" style="color:inherit;opacity:.7">Aciertos</div><div class="n">${right}<span style="font-size:1.4rem;opacity:.6"> / ${QZ.length}</span></div>
+   <div class="pips">${QZ.map((_,k)=>`<i class="${res[k]===true?'r':res[k]===false?'w':''}"></i>`).join("")}</div>
+   <p style="opacity:.75;font-size:.92rem">Selecciona la etiqueta por el contenido, no por la comodidad de compartirlo.</p>`;
+  if(zi>=QZ.length){
+    $("#qz").innerHTML=`<div class="q-step">Resultado final</div><div class="qz-sc">${right===QZ.length?"Clasificación impecable.":right>=4?"Muy bien. Revisa los casos que fallaste.":"Repasa la sección de etiquetas e intenta de nuevo."}</div><div class="q-actions"><button class="btn primary" id="zReset">Volver a intentar</button></div>`;return;
+  }
+  const q=QZ[zi];
+  $("#qz").innerHTML=`<div class="q-step">Caso ${zi+1} de ${QZ.length}</div><div class="qz-sc">${q.s}</div>
+   <div class="opts">${L.map((l,i)=>`<button class="opt" style="--c:${l.c}" data-i="${i}"><span class="dot"></span>${l.full}</button>`).join("")}</div><div id="zfb"></div>`;
+}
+$("#qz").addEventListener("click",e=>{
+  if(e.target.id==="zReset"){zi=0;res=[];renderQz();return}
+  if(e.target.id==="zNext"){zi++;renderQz();return}
+  const b=e.target.closest(".opt");if(!b||b.disabled)return;
+  const q=QZ[zi],i=+b.dataset.i,ok=i===q.a;res[zi]=ok;
+  document.querySelectorAll(".opt").forEach(o=>{o.disabled=true;const j=+o.dataset.i;if(j===q.a)o.classList.add("right");else if(j===i)o.classList.add("wrong")});
+  $("#zfb").innerHTML=`<div class="fb"><b>${ok?"Correcto.":"La adecuada es "+L[q.a].full+"."}</b> ${q.e}</div><div class="q-actions" style="margin-top:12px"><button class="btn primary" id="zNext">${zi===QZ.length-1?"Ver resultado":"Siguiente caso"}</button></div>`;
+  const sc=$("#score .n");if(sc)sc.firstChild.textContent=res.filter(Boolean).length;
+  document.querySelectorAll("#score .pips i")[zi].className=ok?"r":"w";
+});
+renderQz();
+</script>
+
+</body></html>
